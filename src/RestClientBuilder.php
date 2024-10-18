@@ -17,7 +17,9 @@ use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\UidNormalizer;
 use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
@@ -47,9 +49,9 @@ final readonly class RestClientBuilder
     public static function create(ConfigurationClient $configuration, PsrHttpClient $client): self
     {
         $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
-        $objectNormalizer     = new ObjectNormalizer(
+        $objectNormalizer = new ObjectNormalizer(
             $classMetadataFactory,
-            new MetadataAwareNameConverter($classMetadataFactory, new CamelCaseToSnakeCaseNameConverter()),
+            new MetadataAwareNameConverter($classMetadataFactory),
             null,
             new PropertyInfoExtractor(
                 [],
@@ -63,6 +65,8 @@ final readonly class RestClientBuilder
 
         $normalizers = [
             new BackedEnumNormalizer(),
+            new UidNormalizer(),
+            new DateTimeNormalizer(),
             $objectNormalizer,
         ];
 

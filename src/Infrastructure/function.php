@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Alfa-id
+ * Vanta Alfa-id
  *
  * @author    Vlad Shashkov <v.shashkov@pos-credit.ru>
  * @copyright Copyright (c) 2024, The Vanta
@@ -28,4 +28,14 @@ function array_enum_diff(array $one, array $two): array
         $two,
         static fn (BackedEnum $a, BackedEnum $b): int => strcmp((string) $a->value, (string) $b->value)
     );
+}
+
+function underscoreToCamelCase(string $input): string
+{
+    $result = str_replace('_', ' ', $input);
+    $result = ucwords($result);
+    $result = str_replace(' ', '', $result);
+    $result[0] = strtolower($result[0]);
+
+    return $result;
 }

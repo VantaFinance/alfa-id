@@ -20,11 +20,9 @@ interface ApiClient
     public function getToken(Uuid $code, ?string $codeVerifier = null): Token;
 
     /**
-     * @param non-empty-string $refreshToken
-     *
      * @throws ClientException
      */
-    public function refreshToken(string $refreshToken): Token;
+    public function refreshToken(Uuid $refreshToken): Token;
 
     /**
      * @param non-empty-string $token

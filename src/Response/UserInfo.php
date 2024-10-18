@@ -12,7 +12,7 @@ use Symfony\Component\Uid\Uuid;
 final readonly class UserInfo
 {
     public function __construct(
-        public string $rawJwtValue,
+        public string $rawValue,
         public ?string $iss = null,
         public ?Uuid $sub = null,
         public ?Uuid $aud = null,
