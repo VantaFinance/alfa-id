@@ -20,7 +20,8 @@
     "autoload": {
         "psr-4": {
             "Vanta\\Integration\\AlfaId\\": "src/"
-        }
+        },
+        "files": ["src/Infrastructure/function.php"]
     },
     "require": {
         "php": "^8.3",
@@ -31,14 +32,16 @@
         "symfony/property-access": "^6.4|^7.0",
         "phpstan/phpdoc-parser": "^1.0",
         "phpdocumentor/reflection-docblock": "^5.0",
-        "psr/http-client-implementation": "^1.0"
+        "psr/http-client-implementation": "^1.0",
+        "symfony/uid": "^6.4|^7.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^6.4|^7.0",
         "friendsofphp/php-cs-fixer": "^3.17",
         "guzzlehttp/guzzle": "^7.7",
         "symfony/http-client": "^6.4|^7.0",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "nyholm/psr7": "^1.8"
     },
     "config": {
         "allow-plugins": {
