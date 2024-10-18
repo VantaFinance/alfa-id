@@ -14,6 +14,7 @@ use function Vanta\Integration\AlfaId\Response\array_enum_diff;
 final readonly class AuthorizationUrlBuilder
 {
     /**
+     * @param non-empty-string $baseUri
      * @param non-empty-string $redirectUri
      * @param list<Scope> $scopes
      * @param non-empty-string|null $nonce
@@ -22,6 +23,7 @@ final readonly class AuthorizationUrlBuilder
      * @param non-empty-string $responseType
      */
     public function __construct(
+        private string $baseUri,
         private Uuid $clientId,
         private string $redirectUri,
         private array $scopes,
@@ -231,9 +233,21 @@ final readonly class AuthorizationUrlBuilder
     public function build(): string
     {
         $query = [
-
+            'client_id' => $this->clientId->toString(),
+            'redirect_uri' => $this->redirectUri,
+            'scope' => implode(' ', $this->scopes),
+            'nonce' => $this->nonce,
+            'code_challenge' => $this->codeChallenge,
+            'code_challenge_method' => $this->codeChallengeMethod->value,
+            'prompt' => $this->prompt->value,
+            'max_age' => $this->maxAge,
+            'state' => $this->state?->toString(),
+            'response_type' => $this->responseType,
         ];
 
-        return sprintf('%s/auth/authorize?%s', $this->baseUri, http_build_query($query));
+        // убираем null
+        $query = array_filter($query);
+
+        return sprintf('%s/oidc/authorize?%s', $this->baseUri, http_build_query($query));
     }
 }
