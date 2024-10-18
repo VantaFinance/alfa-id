@@ -113,7 +113,7 @@ final readonly class RestClientBuilder
      *
      * @throws LogicException
      */
-    public static function createWithSymfonyGuzzleClient(ConfigurationClient $configuration, string $localCertPath, string $localPk, string $passphrase): self
+    public static function createWithGuzzleClient(ConfigurationClient $configuration, string $localCertPath, string $localPk, string $passphrase): self
     {
         if (!class_exists(Client::class)) {
             throw new LogicException(sprintf(
