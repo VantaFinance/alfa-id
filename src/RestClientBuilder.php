@@ -27,6 +27,10 @@ use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\PipelineMiddle
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\UrlMiddleware;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JsonEncoder;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
+use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\EmailNormalizer;
+use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\InnNumberNormalizer;
+use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\PhoneNumberNormalizer;
+use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\SnilsNumberNormalizer;
 use Vanta\Integration\AlfaId\Transport\RestAuthClient;
 use Vanta\Integration\AlfaId\Transport\RestUserClient;
 
@@ -64,6 +68,10 @@ final readonly class RestClientBuilder
             new BackedEnumNormalizer(),
             new UidNormalizer(),
             new DateTimeNormalizer(),
+            new EmailNormalizer(),
+            new InnNumberNormalizer(),
+            new PhoneNumberNormalizer(),
+            new SnilsNumberNormalizer(),
             $objectNormalizer,
         ];
 
