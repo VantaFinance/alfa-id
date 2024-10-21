@@ -6,21 +6,23 @@ namespace Vanta\Integration\AlfaId\Builder;
 
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
+
+use function Vanta\Integration\AlfaId\Response\array_enum_diff;
+
 use Vanta\Integration\AlfaId\Struct\CodeChallengeMethod;
 use Vanta\Integration\AlfaId\Struct\Prompt;
 use Vanta\Integration\AlfaId\Struct\Scope;
-use function Vanta\Integration\AlfaId\Response\array_enum_diff;
 
 final readonly class AuthorizationUrlBuilder
 {
     /**
-     * @param non-empty-string $baseUri
-     * @param non-empty-string $redirectUri
-     * @param list<Scope> $scopes
+     * @param non-empty-string      $baseUri
+     * @param non-empty-string      $redirectUri
+     * @param list<Scope>           $scopes
      * @param non-empty-string|null $nonce
      * @param non-empty-string|null $codeChallenge
-     * @param positive-int|null $maxAge
-     * @param non-empty-string $responseType
+     * @param positive-int|null     $maxAge
+     * @param non-empty-string      $responseType
      */
     public function __construct(
         private string $baseUri,
@@ -37,19 +39,40 @@ final readonly class AuthorizationUrlBuilder
     ) {
     }
 
+    /**
+     * @param non-empty-string $baseUri
+     */
+    public function withBaseUri(string $baseUri): self
+    {
+        return new static(
+            baseUri: $baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
+        );
+    }
+
     public function withClientId(Uuid $clientId): self
     {
-        return static(
-            $clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
@@ -58,17 +81,18 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withRedirectUri(string $redirectUri): self
     {
-        return static(
-            $this->clientId,
-            $redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
@@ -77,17 +101,18 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withScopes(array $scopes): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
@@ -95,17 +120,18 @@ final readonly class AuthorizationUrlBuilder
     {
         $scopes = array_enum_diff($this->scopes, [$scope]);
 
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
@@ -114,17 +140,18 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withNonce(?string $nonce): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
@@ -133,97 +160,109 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withCodeChallenge(?string $codeChallenge): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
     public function withCodeChallengeMethod(?CodeChallengeMethod $codeChallengeMethod): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
     public function withPrompt(?Prompt $prompt): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $prompt,
-            $this->maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
+    /**
+     * @param positive-int|null $maxAge
+     */
     public function withMaxAge(?int $maxAge): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $maxAge,
-            $this->state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
         );
     }
 
-    public function withState(?Uuid $state): self
+    public function withState(?Uuid $state = new UuidV7()): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $state,
-            $this->responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $state,
+            responseType: $this->responseType,
         );
     }
 
-    public function withResponseType(?string $responseType = 'code'): self
+    /**
+     * @param non-empty-string $responseType
+     */
+    public function withResponseType(string $responseType = 'code'): self
     {
-        return static(
-            $this->clientId,
-            $this->redirectUri,
-            $this->scopes,
-            $this->nonce,
-            $this->codeChallenge,
-            $this->codeChallengeMethod,
-            $this->prompt,
-            $this->maxAge,
-            $this->state,
-            $responseType,
+        return new static(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: $this->scopes,
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $responseType,
         );
     }
 
@@ -233,20 +272,23 @@ final readonly class AuthorizationUrlBuilder
     public function build(): string
     {
         $query = [
-            'client_id' => $this->clientId->toString(),
+            'client_id'    => $this->clientId->toString(),
             'redirect_uri' => $this->redirectUri,
-            'scope' => implode(' ', $this->scopes),
-            'nonce' => $this->nonce,
-            'code_challenge' => $this->codeChallenge,
-            'code_challenge_method' => $this->codeChallengeMethod->value,
-            'prompt' => $this->prompt->value,
-            'max_age' => $this->maxAge,
-            'state' => $this->state?->toString(),
-            'response_type' => $this->responseType,
+            'scope'        => implode(
+                ' ',
+                array_map(fn (Scope $scope) => $scope->value, $this->scopes),
+            ),
+            'nonce'                 => $this->nonce,
+            'code_challenge'        => $this->codeChallenge,
+            'code_challenge_method' => $this->codeChallengeMethod?->value,
+            'prompt'                => $this->prompt?->value,
+            'max_age'               => $this->maxAge,
+            'state'                 => $this->state?->toString(),
+            'response_type'         => $this->responseType,
         ];
 
         // убираем null
-        $query = array_filter($query);
+        $query = array_filter($query, static fn ($value) => null !== $value);
 
         return sprintf('%s/oidc/authorize?%s', $this->baseUri, http_build_query($query));
     }

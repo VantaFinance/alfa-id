@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Vanta\Integration\AlfaId;
 
-use GuzzleHttp\Client;
-use LogicException;
 use Psr\Http\Client\ClientInterface as PsrHttpClient;
-use Symfony\Component\HttpClient\Psr18Client;
 use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder as JsonEncoderSymfony;
 use Symfony\Component\Serializer\Mapping\ClassDiscriminatorFromClassMetadata;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
-use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -29,9 +25,10 @@ use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\InternalServer
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\Middleware;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\PipelineMiddleware;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\UrlMiddleware;
+use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JsonEncoder;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
-use Vanta\Integration\AlfaId\Transport\RestApiClient;
-use Vanta\Integration\AlfaId\Transport\RestOidcClient;
+use Vanta\Integration\AlfaId\Transport\RestAuthClient;
+use Vanta\Integration\AlfaId\Transport\RestUserClient;
 
 final readonly class RestClientBuilder
 {
@@ -49,7 +46,7 @@ final readonly class RestClientBuilder
     public static function create(ConfigurationClient $configuration, PsrHttpClient $client): self
     {
         $classMetadataFactory = new ClassMetadataFactory(new AttributeLoader());
-        $objectNormalizer = new ObjectNormalizer(
+        $objectNormalizer     = new ObjectNormalizer(
             $classMetadataFactory,
             new MetadataAwareNameConverter($classMetadataFactory),
             null,
@@ -78,69 +75,9 @@ final readonly class RestClientBuilder
 
         return new self(
             $client,
-            new SymfonySerializer($normalizers, [new JsonEncoder(), new JwtTokenEncoder()]),
+            new SymfonySerializer($normalizers, [new JsonEncoder(new JsonEncoderSymfony()), new JwtTokenEncoder()]),
             $configuration,
             $middlewares
-        );
-    }
-
-    /**
-     * @param non-empty-string $localCertPath
-     * @param non-empty-string $localPk
-     * @param non-empty-string $passphrase
-     *
-     * @throws LogicException
-     */
-    public static function createWithSymfonyHttpClient(ConfigurationClient $configuration, string $localCertPath, string $localPk, string $passphrase): self
-    {
-        if (!class_exists(Psr18Client::class)) {
-            throw new LogicException(sprintf(
-                'Class %s is not exists. Try running "composer require symfony/http-client".',
-                Psr18Client::class
-            ));
-        }
-
-        $httpClient = new Psr18Client();
-        $httpClient = $httpClient->withOptions([
-            'local_cert' => $localCertPath,
-            'local_pk'   => $localPk,
-            'passphrase' => $passphrase,
-        ]);
-
-        return self::create($configuration, $httpClient);
-    }
-
-    /**
-     * @param non-empty-string $localCertPath
-     * @param non-empty-string $localPk
-     * @param non-empty-string $passphrase
-     *
-     * @throws LogicException
-     */
-    public static function createWithGuzzleClient(ConfigurationClient $configuration, string $localCertPath, string $localPk, string $passphrase): self
-    {
-        if (!class_exists(Client::class)) {
-            throw new LogicException(sprintf(
-                'Class %s is not exists. Try running "composer require guzzlehttp/guzzle".',
-                Client::class
-            ));
-        }
-
-        $httpClient = new Client([
-            'cert'    => $localCertPath,
-            'ssl_key' => [$localPk, $passphrase],
-        ]);
-
-        return self::create($configuration, $httpClient);
-    }
-
-    public function withClient(PsrHttpClient $client): self
-    {
-        return new self(
-            client: $client,
-            serializer: $this->serializer,
-            configuration: $this->configuration,
-            middlewares: $this->middlewares
         );
     }
 
@@ -187,24 +124,24 @@ final readonly class RestClientBuilder
         );
     }
 
-    public function createApiClient(): ApiClient
+    public function createUserClient(): UserClient
     {
-        return new RestApiClient(
+        return new RestUserClient(
             $this->serializer,
             new HttpClient(
-                $this->configuration->withRedirectUri($this->configuration->redirectUri),
+                $this->configuration,
                 new PipelineMiddleware($this->middlewares, $this->client),
             ),
             $this->configuration,
         );
     }
 
-    public function createOidcClient(): OidcClient
+    public function createAuthClient(): AuthClient
     {
-        return new RestOidcClient(
+        return new RestAuthClient(
             $this->serializer,
             new HttpClient(
-                $this->configuration->withRedirectUri($this->configuration->redirectUri),
+                $this->configuration,
                 new PipelineMiddleware($this->middlewares, $this->client),
             ),
             $this->configuration,

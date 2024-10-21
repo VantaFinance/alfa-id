@@ -32,10 +32,30 @@ function array_enum_diff(array $one, array $two): array
 
 function underscoreToCamelCase(string $input): string
 {
-    $result = str_replace('_', ' ', $input);
-    $result = ucwords($result);
-    $result = str_replace(' ', '', $result);
+    $result    = str_replace('_', ' ', $input);
+    $result    = ucwords($result);
+    $result    = str_replace(' ', '', $result);
     $result[0] = strtolower($result[0]);
 
     return $result;
+}
+
+/**
+ * @param array<int|string, mixed> $subject
+ *
+ * @return array<int|string, mixed>
+ */
+function arrayReplaceValueRecursive(array $subject, string $search, ?string $replace): array
+{
+    foreach ($subject as &$subjectItem) {
+        if (is_array($subjectItem)) {
+            $subjectItem = arrayReplaceValueRecursive($subjectItem, $search, $replace);
+        }
+
+        if ($search === $subjectItem) {
+            $subjectItem = $replace;
+        }
+    }
+
+    return $subject;
 }

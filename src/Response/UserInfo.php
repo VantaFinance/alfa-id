@@ -11,6 +11,29 @@ use Symfony\Component\Uid\Uuid;
 
 final readonly class UserInfo
 {
+    /**
+     * @param non-empty-string      $rawValue
+     * @param non-empty-string|null $iss
+     * @param non-empty-string|null $name
+     * @param non-empty-string|null $givenName
+     * @param non-empty-string|null $familyName
+     * @param non-empty-string|null $middleName
+     * @param non-empty-string|null $email
+     * @param non-empty-string|null $gender
+     * @param non-empty-string|null $phoneNumber
+     * @param non-empty-string|null $inn
+     * @param non-empty-string|null $identityDocumentName
+     * @param non-empty-string|null $identityDocumentSeries
+     * @param non-empty-string|null $identityDocumentNumber
+     * @param non-empty-string|null $role
+     * @param non-empty-string|null $actualAddress
+     * @param non-empty-string|null $regAddress
+     * @param non-empty-string|null $birthPlace
+     * @param non-empty-string|null $snils
+     * @param non-empty-string|null $identityDocumentAuthorityCode
+     * @param non-empty-string|null $identityDocumentAuthorityName
+     * @param non-empty-string|null $identityDocumentIssueDate
+     */
     public function __construct(
         public string $rawValue,
         public ?string $iss = null,

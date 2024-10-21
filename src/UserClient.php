@@ -10,19 +10,23 @@ use Vanta\Integration\AlfaId\Response\UserInfo;
 use Vanta\Integration\AlfaId\Struct\Token;
 use Vanta\Integration\AlfaId\Struct\TokenType;
 
-interface ApiClient
+interface UserClient
 {
     /**
+     * @param non-empty-string      $clientSecret
+     * @param non-empty-string      $redirectUri
      * @param non-empty-string|null $codeVerifier
      *
      * @throws ClientException
      */
-    public function getToken(Uuid $code, ?string $codeVerifier = null): Token;
+    public function getToken(Uuid $code, string $clientSecret, string $redirectUri, ?string $codeVerifier = null): Token;
 
     /**
+     * @param non-empty-string $clientSecret
+     *
      * @throws ClientException
      */
-    public function refreshToken(Uuid $refreshToken): Token;
+    public function refreshToken(Uuid $refreshToken, string $clientSecret): Token;
 
     /**
      * @param non-empty-string $token

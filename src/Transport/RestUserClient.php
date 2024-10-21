@@ -6,19 +6,18 @@ namespace Vanta\Integration\AlfaId\Transport;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface as HttpClient;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer as Normalizer;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
 use Symfony\Component\Uid\Uuid;
-use Vanta\Integration\AlfaId\ApiClient;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
 use Vanta\Integration\AlfaId\Response\UserInfo;
 use Vanta\Integration\AlfaId\Struct\Token;
 use Vanta\Integration\AlfaId\Struct\TokenGrantType;
 use Vanta\Integration\AlfaId\Struct\TokenType;
+use Vanta\Integration\AlfaId\UserClient;
 use Yiisoft\Http\Method;
 
-final readonly class RestApiClient implements ApiClient
+final readonly class RestUserClient implements UserClient
 {
     public function __construct(
         private Serializer $serializer,
@@ -27,18 +26,14 @@ final readonly class RestApiClient implements ApiClient
     ) {
     }
 
-    public function getToken(Uuid $code, ?string $codeVerifier = null): Token
+    public function getToken(Uuid $code, string $clientSecret, string $redirectUri, ?string $codeVerifier = null): Token
     {
         $requestData = [
             'grant_type'    => TokenGrantType::AUTHORIZATION_CODE->value,
             'code'          => $code->toString(),
             'client_id'     => $this->configurationClient->clientId->toString(),
-            'client_secret' => $this->configurationClient->clientSecret,
-
-
-            // @todo точно ли из конфига?
-
-            'redirect_uri'  => $this->configurationClient->redirectUri,
+            'client_secret' => $clientSecret,
+            'redirect_uri'  => $redirectUri,
         ];
 
         if (null !== $codeVerifier) {
@@ -60,13 +55,13 @@ final readonly class RestApiClient implements ApiClient
         return $this->serializer->deserialize($response, Token::class, 'json');
     }
 
-    public function refreshToken(string $refreshToken): Token
+    public function refreshToken(Uuid $refreshToken, string $clientSecret): Token
     {
         $requestData = [
             'grant_type'    => TokenGrantType::REFRESH_TOKEN->value,
-            'refresh_token' => $refreshToken,
+            'refresh_token' => $refreshToken->toString(),
             'client_id'     => $this->configurationClient->clientId->toString(),
-            'client_secret' => $this->configurationClient->clientSecret,
+            'client_secret' => $clientSecret,
         ];
 
         $request = new Request(
@@ -97,9 +92,7 @@ final readonly class RestApiClient implements ApiClient
 
         $response = $this->client->sendRequest($request)->getBody()->__toString();
 
-        return $this->serializer->deserialize($response, UserInfo::class, JwtTokenEncoder::FORMAT, [
-            Normalizer::DEFAULT_CONSTRUCTOR_ARGUMENTS => [UserInfo::class => ['rawJwtValue' => $response]],
-        ]);
+        return $this->serializer->deserialize($response, UserInfo::class, JwtTokenEncoder::FORMAT);
 
     }
 }

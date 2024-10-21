@@ -7,7 +7,7 @@ namespace Vanta\Integration\AlfaId;
 use Psr\Http\Client\ClientExceptionInterface as ClientException;
 use Vanta\Integration\AlfaId\Response\ClientSecret;
 
-interface OidcClient
+interface AuthClient
 {
     /**
      * @throws ClientException

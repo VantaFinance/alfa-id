@@ -7,12 +7,12 @@ namespace Vanta\Integration\AlfaId\Transport;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface as HttpClient;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
+use Vanta\Integration\AlfaId\AuthClient;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
-use Vanta\Integration\AlfaId\OidcClient;
 use Vanta\Integration\AlfaId\Response\ClientSecret;
 use Yiisoft\Http\Method;
 
-final readonly class RestOidcClient implements OidcClient
+final readonly class RestAuthClient implements AuthClient
 {
     public function __construct(
         private Serializer $serializer,
