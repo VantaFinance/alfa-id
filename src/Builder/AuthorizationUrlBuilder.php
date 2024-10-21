@@ -275,7 +275,7 @@ final readonly class AuthorizationUrlBuilder
             'redirect_uri' => $this->redirectUri,
             'scope'        => implode(
                 ' ',
-                array_map(fn (Scope $scope) => $scope->value, $this->scopes),
+                array_map(static fn (Scope $scope): string => $scope->value, $this->scopes),
             ),
             'nonce'                 => $this->nonce,
             'code_challenge'        => $this->codeChallenge,
