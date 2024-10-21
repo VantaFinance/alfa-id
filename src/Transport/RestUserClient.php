@@ -7,7 +7,6 @@ namespace Vanta\Integration\AlfaId\Transport;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface as HttpClient;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
-use Symfony\Component\Uid\Uuid;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
 use Vanta\Integration\AlfaId\Response\UserInfo;
@@ -26,14 +25,13 @@ final readonly class RestUserClient implements UserClient
     ) {
     }
 
-    public function getToken(Uuid $code, string $clientSecret, string $redirectUri, ?string $codeVerifier = null): Token
+    public function getToken(string $code, string $redirectUri, ?string $codeVerifier = null): Token
     {
         $requestData = [
-            'grant_type'    => TokenGrantType::AUTHORIZATION_CODE->value,
-            'code'          => $code->toString(),
-            'client_id'     => $this->configurationClient->clientId->toString(),
-            'client_secret' => $clientSecret,
-            'redirect_uri'  => $redirectUri,
+            'grant_type'   => TokenGrantType::AUTHORIZATION_CODE->value,
+            'code'         => $code,
+            'client_id'    => $this->configurationClient->clientId->toString(),
+            'redirect_uri' => $redirectUri,
         ];
 
         if (null !== $codeVerifier) {
@@ -55,13 +53,12 @@ final readonly class RestUserClient implements UserClient
         return $this->serializer->deserialize($response, Token::class, 'json');
     }
 
-    public function refreshToken(Uuid $refreshToken, string $clientSecret): Token
+    public function refreshToken(string $refreshToken): Token
     {
         $requestData = [
             'grant_type'    => TokenGrantType::REFRESH_TOKEN->value,
-            'refresh_token' => $refreshToken->toString(),
+            'refresh_token' => $refreshToken,
             'client_id'     => $this->configurationClient->clientId->toString(),
-            'client_secret' => $clientSecret,
         ];
 
         $request = new Request(
@@ -79,13 +76,13 @@ final readonly class RestUserClient implements UserClient
         return $this->serializer->deserialize($response, Token::class, 'json');
     }
 
-    public function getUserInfo(TokenType $tokenType, string $token): UserInfo
+    public function getUserInfo(TokenType $type, string $token): UserInfo
     {
         $request = new Request(
             Method::GET,
             '/api/userinfo',
             [
-                'Authorization' => $tokenType->value . ' ' . $token,
+                'Authorization' => $type->value . ' ' . $token,
                 'Accept'        => 'application/jwt',
             ],
         );

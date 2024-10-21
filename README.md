@@ -44,7 +44,7 @@ $userClientSdk  = $restClientBuilder->createUserClient();
 use Vanta\Integration\AlfaId\Builder\AuthorizationUrlBuilder;
 use Vanta\Integration\AlfaId\Struct\Scope;
 
-$authorizationUrlBuilder = new AuthorizationUrlBuilder(
+$authorizationUrlBuilder = RestClientBuilder::createAuthorizationUrlBuilder(
     'https://vanta.ru',
     $clientId,
     'https://pos-credit.ru',
@@ -53,22 +53,16 @@ $authorizationUrlBuilder = new AuthorizationUrlBuilder(
 
 ```
 
-Получение clientSecret:
-
-```php
-$clientSecret = $authClientSdk->getClientSecret();
-```
-
 Получение токена:
 
 ```php
-$token = $userClientSdk->getToken(Uuid::fromString('get параметр code, из url-а, на который вернулся пользователь после авторизации в alfa-е'), $clientSecret->clientSecret, 'https://vanta.ru');
+$token = $userClientSdk->getToken('get параметр code, из url-а, на который вернулся пользователь после авторизации в alfa-е', 'https://vanta.ru');
 ```
 
 Обновление токена:
 
 ```php
-$token = $userClientSdk->refreshToken($token->refreshToken, $clientSecretResponse->clientSecret);
+$token = $userClientSdk->refreshToken($token->refreshToken);
 ```
 
 Получение данных о пользователе:

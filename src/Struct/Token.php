@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Vanta\Integration\AlfaId\Struct;
 
 use Symfony\Component\Serializer\Annotation\SerializedPath;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class Token
 {
     /**
      * @param non-empty-string      $accessToken
+     * @param non-empty-string      $refreshToken
      * @param positive-int|null     $expiresIn
      * @param non-empty-string|null $idToken
      */
@@ -18,7 +18,7 @@ final readonly class Token
         #[SerializedPath('[access_token]')]
         public string $accessToken,
         #[SerializedPath('[refresh_token]')]
-        public Uuid $refreshToken,
+        public string $refreshToken,
         #[SerializedPath('[token_type]')]
         public TokenType $tokenType,
         #[SerializedPath('[expires_in]')]

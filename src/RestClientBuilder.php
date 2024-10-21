@@ -18,8 +18,12 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\UidNormalizer;
 use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
+use Vanta\Integration\AlfaId\Builder\AuthorizationUrlBuilder;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\HttpClient;
+use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\AuthMiddleware;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\ClientErrorMiddleware;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\InternalServerMiddleware;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\Middleware\Middleware;
@@ -31,6 +35,9 @@ use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\EmailNormalize
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\InnNumberNormalizer;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\PhoneNumberNormalizer;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\SnilsNumberNormalizer;
+use Vanta\Integration\AlfaId\Struct\CodeChallengeMethod;
+use Vanta\Integration\AlfaId\Struct\Prompt;
+use Vanta\Integration\AlfaId\Struct\Scope;
 use Vanta\Integration\AlfaId\Transport\RestAuthClient;
 use Vanta\Integration\AlfaId\Transport\RestUserClient;
 
@@ -138,7 +145,7 @@ final readonly class RestClientBuilder
             $this->serializer,
             new HttpClient(
                 $this->configuration,
-                new PipelineMiddleware($this->middlewares, $this->client),
+                new PipelineMiddleware([new AuthMiddleware($this->createAuthClient()), ...$this->middlewares], $this->client),
             ),
             $this->configuration,
         );
@@ -153,6 +160,42 @@ final readonly class RestClientBuilder
                 new PipelineMiddleware($this->middlewares, $this->client),
             ),
             $this->configuration,
+        );
+    }
+
+    /**
+     * @param non-empty-string      $baseUri
+     * @param non-empty-string      $redirectUri
+     * @param list<Scope>           $scopes
+     * @param non-empty-string|null $codeChallenge
+     * @param positive-int|null     $maxAge
+     * @param non-empty-string      $responseType
+     */
+    public function createAuthorizationUrlBuilder(
+        string $baseUri,
+        Uuid $clientId,
+        string $redirectUri,
+        array $scopes,
+        ?string $nonce = null,
+        ?string $codeChallenge = null,
+        ?CodeChallengeMethod $codeChallengeMethod = null,
+        ?Prompt $prompt = null,
+        ?int $maxAge = null,
+        ?Uuid $state = new UuidV7(),
+        string $responseType = 'code',
+    ): AuthorizationUrlBuilder {
+        return new AuthorizationUrlBuilder(
+            $baseUri,
+            $clientId,
+            $redirectUri,
+            $scopes,
+            $nonce,
+            $codeChallenge,
+            $codeChallengeMethod,
+            $prompt,
+            $maxAge,
+            $state,
+            $responseType,
         );
     }
 }

@@ -286,7 +286,6 @@ final readonly class AuthorizationUrlBuilder
             'response_type'         => $this->responseType,
         ];
 
-        // убираем null
         $query = array_filter($query, static fn ($value) => null !== $value);
 
         return sprintf('%s/oidc/authorize?%s', $this->baseUri, http_build_query($query));
