@@ -19,7 +19,6 @@ final readonly class AuthorizationUrlBuilder
      * @param non-empty-string      $baseUri
      * @param non-empty-string      $redirectUri
      * @param list<Scope>           $scopes
-     * @param non-empty-string|null $nonce
      * @param non-empty-string|null $codeChallenge
      * @param positive-int|null     $maxAge
      * @param non-empty-string      $responseType
@@ -29,11 +28,11 @@ final readonly class AuthorizationUrlBuilder
         private Uuid $clientId,
         private string $redirectUri,
         private array $scopes,
-        private ?string $nonce,
-        private ?string $codeChallenge,
-        private ?CodeChallengeMethod $codeChallengeMethod,
-        private ?Prompt $prompt,
-        private ?int $maxAge,
+        private ?string $nonce = null,
+        private ?string $codeChallenge = null,
+        private ?CodeChallengeMethod $codeChallengeMethod = null,
+        private ?Prompt $prompt = null,
+        private ?int $maxAge = null,
         private ?Uuid $state = new UuidV7(),
         private string $responseType = 'code',
     ) {

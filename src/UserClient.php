@@ -13,6 +13,7 @@ use Vanta\Integration\AlfaId\Struct\TokenType;
 interface UserClient
 {
     /**
+     * @param Uuid                  $code         - get параметр code, из url-а, на который вернулся пользователь после авторизации в alfa-е
      * @param non-empty-string      $clientSecret
      * @param non-empty-string      $redirectUri
      * @param non-empty-string|null $codeVerifier
