@@ -18,8 +18,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\UidNormalizer;
 use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
-use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Uid\UuidV7;
 use Vanta\Integration\AlfaId\Builder\AuthorizationUrlBuilder;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\HttpClient;
@@ -35,8 +33,6 @@ use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\EmailNormalize
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\InnNumberNormalizer;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\PhoneNumberNormalizer;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Normalizer\SnilsNumberNormalizer;
-use Vanta\Integration\AlfaId\Struct\CodeChallengeMethod;
-use Vanta\Integration\AlfaId\Struct\Prompt;
 use Vanta\Integration\AlfaId\Struct\Scope;
 use Vanta\Integration\AlfaId\Transport\RestAuthClient;
 use Vanta\Integration\AlfaId\Transport\RestUserClient;
@@ -164,38 +160,29 @@ final readonly class RestClientBuilder
     }
 
     /**
-     * @param non-empty-string      $baseUri
-     * @param non-empty-string      $redirectUri
-     * @param list<Scope>           $scopes
-     * @param non-empty-string|null $codeChallenge
-     * @param positive-int|null     $maxAge
-     * @param non-empty-string      $responseType
+     * @param non-empty-string $baseUri
+     * @param non-empty-string $redirectUri
      */
-    public function createAuthorizationUrlBuilder(
+    public function createAuthUrlBuilder(
         string $baseUri,
-        Uuid $clientId,
         string $redirectUri,
-        array $scopes,
-        ?string $nonce = null,
-        ?string $codeChallenge = null,
-        ?CodeChallengeMethod $codeChallengeMethod = null,
-        ?Prompt $prompt = null,
-        ?int $maxAge = null,
-        ?Uuid $state = new UuidV7(),
-        string $responseType = 'code',
     ): AuthorizationUrlBuilder {
         return new AuthorizationUrlBuilder(
             $baseUri,
-            $clientId,
+            $this->configuration->clientId,
             $redirectUri,
-            $scopes,
-            $nonce,
-            $codeChallenge,
-            $codeChallengeMethod,
-            $prompt,
-            $maxAge,
-            $state,
-            $responseType,
+            [
+                Scope::OPENID,
+                Scope::PROFILE,
+                Scope::EMAIL,
+                Scope::PHONE,
+                Scope::INN,
+                Scope::IDENTITY_DOCUMENT,
+                Scope::ADDRESS_FL,
+                Scope::BIRTHPLACE,
+                Scope::SNILS,
+                Scope::IDENTITY_DOCUMENT_DETAILS,
+            ],
         );
     }
 }

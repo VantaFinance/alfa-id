@@ -288,6 +288,13 @@ final readonly class AuthorizationUrlBuilder
 
         $query = array_filter($query, static fn ($value) => null !== $value);
 
-        return sprintf('%s/oidc/authorize?%s', $this->baseUri, http_build_query($query));
+        return sprintf(
+            '%s/oidc/authorize?%s',
+            $this->baseUri,
+            http_build_query(
+                data: $query,
+                encoding_type: PHP_QUERY_RFC3986 // чтобы пробелы кодировались как %20, требование из документации альфы
+            )
+        );
     }
 }

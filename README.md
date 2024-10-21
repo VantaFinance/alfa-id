@@ -1,4 +1,4 @@
-# Alfa id клиент client
+# Alfa id клиент
 
 Клиент для общения со [API alfa id](https://developers.alfabank.ru/products/alfa-api/documentation/articles/alfa-id/articles/intro/intro).
 
@@ -41,15 +41,10 @@ $userClientSdk  = $restClientBuilder->createUserClient();
 Генерация URL для авторизации пользователя:
 
 ```php
-use Vanta\Integration\AlfaId\Builder\AuthorizationUrlBuilder;
-use Vanta\Integration\AlfaId\Struct\Scope;
 
-$authorizationUrlBuilder = RestClientBuilder::createAuthorizationUrlBuilder(
-    'https://vanta.ru',
-    $clientId,
-    'https://pos-credit.ru',
-    [Scope::AS_PAYOUT],
-);
+$authorizationUrl = $restClientBuilder->createAuthUrlBuilder('https://id-sandbox.alfabank.ru', 'https://vanta.ru')
+    ->build()
+;
 
 ```
 
