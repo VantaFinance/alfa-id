@@ -18,7 +18,7 @@ final readonly class UserInfo
 {
     /**
      * @param non-empty-string      $rawValue
-     * @param non-empty-string|null $iss
+     * @param non-empty-string      $iss
      * @param non-empty-string|null $name
      * @param non-empty-string|null $givenName
      * @param non-empty-string|null $familyName
@@ -35,9 +35,9 @@ final readonly class UserInfo
      */
     public function __construct(
         public string $rawValue,
-        public ?string $iss = null,
-        public ?Uuid $sub = null,
-        public ?Uuid $aud = null,
+        public string $iss,
+        public Uuid $sub,
+        public Uuid $aud,
         public ?string $name = null,
         public ?string $givenName = null,
         public ?string $familyName = null,
