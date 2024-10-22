@@ -171,18 +171,7 @@ final readonly class RestClientBuilder
             $baseUri,
             $this->configuration->clientId,
             $redirectUri,
-            [
-                Scope::OPENID,
-                Scope::PROFILE,
-                Scope::EMAIL,
-                Scope::PHONE,
-                Scope::INN,
-                Scope::IDENTITY_DOCUMENT,
-                Scope::ADDRESS_FL,
-                Scope::BIRTHPLACE,
-                Scope::SNILS,
-                Scope::IDENTITY_DOCUMENT_DETAILS,
-            ],
+            [Scope::OPENID],
         );
     }
 }

@@ -7,7 +7,6 @@ namespace Vanta\Integration\AlfaId;
 use Psr\Http\Client\ClientExceptionInterface as ClientException;
 use Vanta\Integration\AlfaId\Response\UserInfo;
 use Vanta\Integration\AlfaId\Struct\Token;
-use Vanta\Integration\AlfaId\Struct\TokenType;
 
 interface UserClient
 {
@@ -32,5 +31,5 @@ interface UserClient
      *
      * @throws ClientException
      */
-    public function getUserInfo(TokenType $type, string $token): UserInfo;
+    public function getUserInfo(string $token): UserInfo;
 }

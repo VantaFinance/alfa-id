@@ -76,13 +76,13 @@ final readonly class RestUserClient implements UserClient
         return $this->serializer->deserialize($response, Token::class, 'json');
     }
 
-    public function getUserInfo(TokenType $type, string $token): UserInfo
+    public function getUserInfo(string $token): UserInfo
     {
         $request = new Request(
             Method::GET,
             '/api/userinfo',
             [
-                'Authorization' => $type->value . ' ' . $token,
+                'Authorization' => TokenType::BEARER->value . ' ' . $token,
                 'Accept'        => 'application/jwt',
             ],
         );

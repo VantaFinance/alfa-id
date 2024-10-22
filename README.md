@@ -63,6 +63,6 @@ $token = $userClientSdk->refreshToken($token->refreshToken);
 Получение данных о пользователе:
 
 ```php
-$clientResponse = $userClientSdk->getUserinfo($token->tokenType, $token->accessToken);
+$clientResponse = $userClientSdk->getUserinfo($token->accessToken);
 ```
 
