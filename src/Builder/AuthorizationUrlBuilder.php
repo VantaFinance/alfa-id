@@ -116,6 +116,27 @@ final readonly class AuthorizationUrlBuilder
         );
     }
 
+    public function withScope(Scope $scope): self
+    {
+        if (in_array($scope, $this->scopes, true)) {
+            return $this;
+        }
+
+        return new self(
+            baseUri: $this->baseUri,
+            clientId: $this->clientId,
+            redirectUri: $this->redirectUri,
+            scopes: array_merge($this->scopes, [$scope]),
+            nonce: $this->nonce,
+            codeChallenge: $this->codeChallenge,
+            codeChallengeMethod: $this->codeChallengeMethod,
+            prompt: $this->prompt,
+            maxAge: $this->maxAge,
+            state: $this->state,
+            responseType: $this->responseType,
+        );
+    }
+
     public function withoutScope(Scope $scope): self
     {
         $scopes = array_enum_diff($this->scopes, [$scope]);
