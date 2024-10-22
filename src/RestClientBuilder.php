@@ -163,15 +163,8 @@ final readonly class RestClientBuilder
      * @param non-empty-string $baseUri
      * @param non-empty-string $redirectUri
      */
-    public function createAuthUrlBuilder(
-        string $baseUri,
-        string $redirectUri,
-    ): AuthorizationUrlBuilder {
-        return new AuthorizationUrlBuilder(
-            $baseUri,
-            $this->configuration->clientId,
-            $redirectUri,
-            [Scope::OPENID],
-        );
+    public function createAuthUrlBuilder(string $baseUri, string $redirectUri): AuthorizationUrlBuilder
+    {
+        return new AuthorizationUrlBuilder($baseUri, $this->configuration->clientId, $redirectUri, [Scope::OPENID]);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vanta\Integration\AlfaId\Builder;
 
+use LogicException;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
 
@@ -18,7 +19,7 @@ final readonly class AuthorizationUrlBuilder
     /**
      * @param non-empty-string      $baseUri
      * @param non-empty-string      $redirectUri
-     * @param list<Scope>           $scopes
+     * @param non-empty-list<Scope> $scopes
      * @param non-empty-string|null $codeChallenge
      * @param positive-int|null     $maxAge
      * @param non-empty-string      $responseType
@@ -43,7 +44,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withBaseUri(string $baseUri): self
     {
-        return new static(
+        return new self(
             baseUri: $baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -60,7 +61,7 @@ final readonly class AuthorizationUrlBuilder
 
     public function withClientId(Uuid $clientId): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $clientId,
             redirectUri: $this->redirectUri,
@@ -80,7 +81,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withRedirectUri(string $redirectUri): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $redirectUri,
@@ -96,11 +97,11 @@ final readonly class AuthorizationUrlBuilder
     }
 
     /**
-     * @param list<Scope> $scopes
+     * @param non-empty-list<Scope> $scopes
      */
     public function withScopes(array $scopes): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -119,7 +120,11 @@ final readonly class AuthorizationUrlBuilder
     {
         $scopes = array_enum_diff($this->scopes, [$scope]);
 
-        return new static(
+        if ([] == $scopes) {
+            throw new LogicException('Список согласий должен быть не пустой');
+        }
+
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -139,7 +144,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withNonce(?string $nonce): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -159,7 +164,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withCodeChallenge(?string $codeChallenge): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -176,7 +181,7 @@ final readonly class AuthorizationUrlBuilder
 
     public function withCodeChallengeMethod(?CodeChallengeMethod $codeChallengeMethod): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -193,7 +198,7 @@ final readonly class AuthorizationUrlBuilder
 
     public function withPrompt(?Prompt $prompt): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -213,7 +218,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withMaxAge(?int $maxAge): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -230,7 +235,7 @@ final readonly class AuthorizationUrlBuilder
 
     public function withState(?Uuid $state = new UuidV7()): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
@@ -250,7 +255,7 @@ final readonly class AuthorizationUrlBuilder
      */
     public function withResponseType(string $responseType = 'code'): self
     {
-        return new static(
+        return new self(
             baseUri: $this->baseUri,
             clientId: $this->clientId,
             redirectUri: $this->redirectUri,
