@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\SerializerInterface as Serializer;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
 use Vanta\Integration\AlfaId\Response\UserInfo;
-use Vanta\Integration\AlfaId\Struct\Token;
+use Vanta\Integration\AlfaId\Struct\PairKey;
 use Vanta\Integration\AlfaId\Struct\TokenGrantType;
 use Vanta\Integration\AlfaId\Struct\TokenType;
 use Vanta\Integration\AlfaId\UserClient;
@@ -25,7 +25,7 @@ final readonly class RestUserClient implements UserClient
     ) {
     }
 
-    public function getToken(string $code, string $redirectUri, ?string $codeVerifier = null): Token
+    public function getPairKeyByAuthorizationCode(string $code, string $redirectUri, ?string $codeVerifier = null): PairKey
     {
         $requestData = [
             'grant_type'   => TokenGrantType::AUTHORIZATION_CODE->value,
@@ -50,10 +50,10 @@ final readonly class RestUserClient implements UserClient
 
         $response = $this->client->sendRequest($request)->getBody()->__toString();
 
-        return $this->serializer->deserialize($response, Token::class, 'json');
+        return $this->serializer->deserialize($response, PairKey::class, 'json');
     }
 
-    public function refreshToken(string $refreshToken): Token
+    public function getPairKeyByRefreshToken(string $refreshToken): PairKey
     {
         $requestData = [
             'grant_type'    => TokenGrantType::REFRESH_TOKEN->value,
@@ -73,7 +73,7 @@ final readonly class RestUserClient implements UserClient
 
         $response = $this->client->sendRequest($request)->getBody()->__toString();
 
-        return $this->serializer->deserialize($response, Token::class, 'json');
+        return $this->serializer->deserialize($response, PairKey::class, 'json');
     }
 
     public function getUserInfo(string $token): UserInfo

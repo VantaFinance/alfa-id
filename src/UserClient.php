@@ -6,7 +6,7 @@ namespace Vanta\Integration\AlfaId;
 
 use Psr\Http\Client\ClientExceptionInterface as ClientException;
 use Vanta\Integration\AlfaId\Response\UserInfo;
-use Vanta\Integration\AlfaId\Struct\Token;
+use Vanta\Integration\AlfaId\Struct\PairKey;
 
 interface UserClient
 {
@@ -17,14 +17,14 @@ interface UserClient
      *
      * @throws ClientException
      */
-    public function getToken(string $code, string $redirectUri, ?string $codeVerifier = null): Token;
+    public function getPairKeyByAuthorizationCode(string $code, string $redirectUri, ?string $codeVerifier = null): PairKey;
 
     /**
      * @param non-empty-string $refreshToken
      *
      * @throws ClientException
      */
-    public function refreshToken(string $refreshToken): Token;
+    public function getPairKeyByRefreshToken(string $refreshToken): PairKey;
 
     /**
      * @param non-empty-string $token
