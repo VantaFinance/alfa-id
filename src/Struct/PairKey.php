@@ -6,7 +6,7 @@ namespace Vanta\Integration\AlfaId\Struct;
 
 use Symfony\Component\Serializer\Annotation\SerializedPath;
 
-final readonly class Token
+final readonly class PairKey
 {
     /**
      * @param non-empty-string      $accessToken
