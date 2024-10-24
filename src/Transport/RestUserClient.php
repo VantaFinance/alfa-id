@@ -30,7 +30,7 @@ final readonly class RestUserClient implements UserClient
         $requestData = [
             'grant_type'   => TokenGrantType::AUTHORIZATION_CODE->value,
             'code'         => $code,
-            'client_id'    => $this->configurationClient->clientId->toString(),
+            'client_id'    => $this->configurationClient->clientId->jsonSerialize(),
             'redirect_uri' => $redirectUri,
         ];
 
@@ -58,7 +58,7 @@ final readonly class RestUserClient implements UserClient
         $requestData = [
             'grant_type'    => TokenGrantType::REFRESH_TOKEN->value,
             'refresh_token' => $refreshToken,
-            'client_id'     => $this->configurationClient->clientId->toString(),
+            'client_id'     => $this->configurationClient->clientId->jsonSerialize(),
         ];
 
         $request = new Request(
