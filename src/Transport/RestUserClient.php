@@ -91,7 +91,7 @@ final readonly class RestUserClient implements UserClient
         $stream = $this->client->sendRequest($request)->getBody();
 
         return $this->serializer->deserialize($stream->__toString(), UserInfo::class, JwtTokenEncoder::FORMAT, [
-            Normalizer::DEFAULT_CONSTRUCTOR_ARGUMENTS => [UserInfo::class => ['rawInfo' => $stream]]
+            Normalizer::DEFAULT_CONSTRUCTOR_ARGUMENTS => [UserInfo::class => ['rawInfo' => $stream]],
         ]);
     }
 }
