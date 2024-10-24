@@ -297,7 +297,7 @@ final readonly class AuthorizationUrlBuilder
     public function build(): string
     {
         $query = [
-            'client_id'    => $this->clientId->toString(),
+            'client_id'    => $this->clientId->jsonSerialize(),
             'redirect_uri' => $this->redirectUri,
             'scope'        => implode(
                 ' ',
