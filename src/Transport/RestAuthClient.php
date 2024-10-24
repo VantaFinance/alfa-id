@@ -25,7 +25,7 @@ final readonly class RestAuthClient implements AuthClient
     {
         $request = new Request(
             Method::POST,
-            sprintf('/oidc/clients/%s/client-secret', $this->configurationClient->clientId->toString()),
+            sprintf('/oidc/clients/%s/client-secret', $this->configurationClient->clientId->jsonSerialize()),
             ['Accept' => 'application/json'],
         );
 
