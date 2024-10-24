@@ -6,7 +6,6 @@ namespace Vanta\Integration\AlfaId\Response;
 
 use Brick\PhoneNumber\PhoneNumber;
 use DateTimeImmutable;
-use Psr\Http\Message\StreamInterface as Stream;
 use Symfony\Component\Serializer\Attribute\Context;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Uid\Uuid;
