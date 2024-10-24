@@ -39,7 +39,6 @@ final readonly class UserInfo
         public string $iss,
         public Uuid $sub,
         public Uuid $aud,
-        public Stream $rawInfo,
         public ?string $name = null,
         public ?string $givenName = null,
         public ?string $familyName = null,
