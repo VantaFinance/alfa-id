@@ -66,7 +66,7 @@ final readonly class JwtTokenEncoder implements Decoder
             : null
         ;
 
-        $dataDeserialized['rawValue'] = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $dataDeserialized['rawValue'] = json_encode($dataDeserialized, JSON_UNESCAPED_UNICODE);
 
         return $dataDeserialized;
 
