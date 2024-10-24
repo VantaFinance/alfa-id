@@ -6,7 +6,6 @@ namespace Vanta\Integration\AlfaId\Transport;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface as HttpClient;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer as Normalizer;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;
 use Vanta\Integration\AlfaId\Infrastructure\HttpClient\ConfigurationClient;
 use Vanta\Integration\AlfaId\Infrastructure\Serializer\Encoder\JwtTokenEncoder;
@@ -90,8 +89,6 @@ final readonly class RestUserClient implements UserClient
 
         $stream = $this->client->sendRequest($request)->getBody();
 
-        return $this->serializer->deserialize($stream->__toString(), UserInfo::class, JwtTokenEncoder::FORMAT, [
-            Normalizer::DEFAULT_CONSTRUCTOR_ARGUMENTS => [UserInfo::class => ['rawInfo' => $stream]],
-        ]);
+        return $this->serializer->deserialize($stream->__toString(), UserInfo::class, JwtTokenEncoder::FORMAT);
     }
 }

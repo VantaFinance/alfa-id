@@ -59,14 +59,14 @@ final readonly class JwtTokenEncoder implements Decoder
             $dataDeserialized[underscoreToCamelCase($key)] = $value;
         }
 
-        $dataDeserialized['rawValue'] = $data;
-
         $dataDeserialized['aud'] = $dataDeserialized['aud'][0] ?? null; // по документации поле - Uuid, но API возвращает массив с единственным элементом Uuid
 
         $dataDeserialized['identityDocumentSeries'] = array_key_exists('identityDocumentSeries', $dataDeserialized)
             ? str_replace(' ', '', $dataDeserialized['identityDocumentSeries']) // API возвращает с пробелом посередине
             : null
         ;
+
+        $dataDeserialized['rawValue'] = json_encode($data, JSON_UNESCAPED_UNICODE);
 
         return $dataDeserialized;
 
