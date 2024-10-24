@@ -308,7 +308,7 @@ final readonly class AuthorizationUrlBuilder
             'code_challenge_method' => $this->codeChallengeMethod?->value,
             'prompt'                => $this->prompt?->value,
             'max_age'               => $this->maxAge,
-            'state'                 => $this->state?->toString(),
+            'state'                 => $this->state?->jsonSerialize(),
             'response_type'         => $this->responseType,
         ];
 
